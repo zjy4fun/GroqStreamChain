@@ -57,12 +57,11 @@ class LLMService:
             # Add system message to the list of messages
             system_message = {
                 "role": "system",
-                "content": SYSTEM_PROMPT
+                "content": SYSTEM_PROMPT,
             }
-            messages.insert(0, system_message)  # Insert system message at the beginning
-            
-            # Convert messages to Groq format
-            groq_messages = self._convert_to_groq_messages(messages)
+
+            # Combine system prompt with existing messages *without* mutating the original list
+            groq_messages = self._convert_to_groq_messages([system_message] + messages)
             
             # Log the request (excluding full message content for privacy)
             logger.info(f"Sending request to Groq API with {len(groq_messages)} messages")
