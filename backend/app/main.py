@@ -2,17 +2,15 @@ import uuid
 import json
 import asyncio
 import logging
-from typing import Dict, List, Optional
+from typing import Dict
 
 import uvicorn
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 
-from models.chat import ChatSession, Message
-from services.llm_service import LLMService
-from config import HOST, PORT
+from .models.chat import ChatSession, Message
+from .services.llm_service import LLMService
+from .config import HOST, PORT, ALLOWED_ORIGINS
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -20,11 +18,14 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Set up templates
-templates = Jinja2Templates(directory="templates")
+# Enable CORS for frontend-backend separation
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize LLM service
 llm_service = LLMService()
@@ -36,9 +37,7 @@ chat_sessions: Dict[str, ChatSession] = {}
 active_connections: Dict[str, WebSocket] = {}
 
 
-@app.get("/", response_class=HTMLResponse)
-async def get_index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+# No root HTML route; serve UI from separate frontend app
 
 
 class ConnectionManager:
@@ -146,4 +145,4 @@ async def health_check():
 
 
 if __name__ == "__main__":
-    uvicorn.run("server:app", host=HOST, port=PORT, reload=True)
+    uvicorn.run("app.main:app", host=HOST, port=PORT, reload=True)
