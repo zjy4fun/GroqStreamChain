@@ -13,17 +13,24 @@
 **GroqStreamChain** is a real-time, AI-powered chat application that uses WebSocket for low-latency communication and streams responses from a language model (LLM) powered by Groq and LangChain. The system is designed to provide a seamless conversational experience with real-time feedback and response streaming.
 Here is the final view of the **GroqStreamChain** chat application:
 
-![Chat App Final View](static/groqstreamchain.gif)
+![Chat App Final View](frontend/assets/groqstreamchain.gif)
 
 ## Project Structure
 
-The system is organized into separate modules, each with specific responsibilities:
+The project is now split into frontend and backend:
 
-- **`server.py`**: Main FastAPI application with WebSocket handling.
-- **`config.py`**: Configuration management (e.g., API keys, model settings).
-- **`models/chat.py`**: Data models for chats and messages.
-- **`services/llm_service.py`**: LLM service using Groq and LangChain for AI-powered responses.
-- **Frontend Files**: HTML, CSS, and JS files for the user interface.
+- **`backend/`**: FastAPI app and Python services
+  - `app/main.py`: FastAPI application with WebSocket `/ws/chat` and `/health`
+  - `app/config.py`: Configuration and CORS
+  - `app/models/`: Pydantic models
+  - `app/services/`: LLM integration
+  - `backend/requirements.txt`: Python dependencies
+- **`frontend/`**: Static site
+  - `index.html`: UI
+  - `css/style.css`: Styles
+  - `js/main.js`: WebSocket client
+  - `js/config.js`: Configure `BACKEND_WS_BASE` if backend is on another host
+  - `assets/`: Images
 
 ## Key Features
 
@@ -75,15 +82,19 @@ MODEL_NAME=llama-3.1-8b-instant
 
 Make sure to replace `your_groq_api_key_here` with your actual Groq API key.
 
-### 4. Run the server:
+### 4. Run the backend server
 
 ```bash
-python server.py
+cd backend
+pip install -r requirements.txt
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-This will start the FastAPI server, and you can access the application via the browser at:
+Health check: `http://localhost:8000/health`
 
-[http://localhost:8000](http://localhost:8000)
+### 5. Run the frontend (static hosting)
+
+Open `frontend/index.html` in a browser, or serve with any static server. If backend runs on a different host/port, set `window.APP_CONFIG.BACKEND_WS_BASE` in `frontend/js/config.js` (e.g., `ws://localhost:8000`).
 
 
 

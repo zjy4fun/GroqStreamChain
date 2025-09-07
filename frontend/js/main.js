@@ -13,6 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 5;
     
+    function getWebSocketBase() {
+        try {
+            if (window.APP_CONFIG && window.APP_CONFIG.BACKEND_WS_BASE) {
+                const base = window.APP_CONFIG.BACKEND_WS_BASE.trim();
+                return base.endsWith('/') ? base.slice(0, -1) : base;
+            }
+        } catch (_) {}
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        return `${protocol}//${window.location.host}`;
+    }
+
     // Initialize the WebSocket connection
     function connectWebSocket() {
         try {
@@ -23,8 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 socket.close();
             }
             
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsUrl = `${protocol}//${window.location.host}/ws/chat`;
+            const wsUrl = `${getWebSocketBase()}/ws/chat`;
             
             console.log(`Connecting to WebSocket at: ${wsUrl}`);
             socket = new WebSocket(wsUrl);
