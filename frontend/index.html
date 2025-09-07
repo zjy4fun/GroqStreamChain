@@ -1,31 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/assets/groqstreamchain.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GroqStreamChain Chat</title>
-    <link rel="stylesheet" href="./css/style.css">
-    <script src="./js/config.js"></script>
-    <script defer src="./js/main.js"></script>
-    <link rel="icon" href="./assets/groqstreamchain.png">
-    <meta name="robots" content="noindex,nofollow">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src *; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
-    
-</head>
-<body>
-    <div class="chat-container">
-        <header>
-            <h1>Let's Chat with GroqStreamChain &#129302;&#128172;</h1>
-
-            <div id="connection-status">Connecting...</div>
-        </header>
-        
-        <div id="chat-messages" class="messages-container"></div>
-        
-        <div class="input-container">
-            <textarea id="message-input" placeholder="Type your message here..." rows="3"></textarea>
-            <button id="send-button">Send</button>
-        </div>
-    </div>
-</body>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
